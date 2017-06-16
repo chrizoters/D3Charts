@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+ <html>
+   <head>
+ 
+        <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.1.3"></script>
+<!--       <script type="text/javascript" src="d3.v2.min.js"></script>-->
+   </head>
+   <body>
+     <p>BAsic shapes</p>
+  </body>
+
+     
+     <script>
+         
+   /*      how to bind JSON objects to the __data__ attribute and how we can use JSON to clean up the code for easier comprehension.*/
+
+                   var data = [60,40, 20, 10];
+
+         var svgContainer = d3.select("body").append("svg")
+                                     .attr("width", 600)
+                                     .attr("height", 200)
+                                    .style("border","2px solid red");
+         
+         //Draw the Circle
+         var circle = svgContainer.append("circle")
+                                  .attr("cx", 30)
+                                  .attr("cy", 30)
+                                    .attr("r", 20);
+         //rectangle
+         var rectangle = svgContainer.append("rect")
+                                 .attr("x", 60)
+                                .attr("y", 10)
+                                .attr("width", 50)
+                                .attr("height", 100);
+         
+         
+         //Draw the Ellipse
+         var elips = svgContainer.append("ellipse")
+                                  .attr("cx", 150)
+                                  .attr("cy", 50)
+                                 .attr("rx", 25)
+                                 .attr("ry", 10)
+                                   .style("fill", "purple");
+         
+        /* The necessary SVG attributes for drawing an ellipse are the "cx", "cy", "rx" and "ry".*/
+         
+         
+         
+         
+        /* Using the Circle, Rectangle, and Ellipse examples, you can probably guess that to build a straight line, you will need a "x1", "y1", "x2" and "y2".*/
+         //Draw the Line
+         var line = svgContainer.append("line")
+                          .attr("x1", 5)
+                          .attr("y1", 5)
+                         .attr("x2", 100)
+                         .attr("y2", 150)
+                          .attr("stroke-width", 2)
+                        .attr("stroke", "black");
+         
+        /* sNote - We don't use a style method with the line. Because ‘line’ elements are single lines and thus are geometrically one-dimensional, they have no interior. Which is why to style them we need to deal with the "stroke" color and "stroke-width*/
+         
+            /*  To fix this, make sure to give the line:
+
+                     .attribute("stroke-width", NUMBER), where NUMBER is how wide the line is in units
+                    .attribute("stroke", "COLOR"), where COLOR is a color to used to color the line*/
+         
+       /*  
+         Note : The necessary SVG attributes for drawing a straight line are the "x1", "y1", "x2", "y2", "stroke" and "stroke-width".*/
+         
+         
+        /* Polyline and Polygon
+                    Using the Circle, Rectangle, Ellipse, and Straight Line examples, 
+                    you can probably guess that to build a Polyline and Polygon, you will need a "stroke", 
+                    "stroke-width" and "points". And "fill" for the         Polygon.*/
+     </script>
+</html>

@@ -6,7 +6,9 @@
 <!--       <script type="text/javascript" src="d3.v2.min.js"></script>-->
    </head>
    <body>
-     <p>D3.js Selections are JavaScript Arrays.!</p>
+     <p>D3.js Selections are JavaScript Arrays.! </p>
+       <br>
+       <p>using JSON can simplify your D3.js code<</p>
   </body>
 
      
@@ -85,12 +87,10 @@
                        .attr("cy", function (d) { return d.y_axis; })
                        .attr("r", function (d) { return d.radius; })
                         .style("fill", function(d) {
-                        var returnColor;
-                          if (d === 40) { returnColor = "green";}
-                          else if (d === 20) { returnColor = "purple";} 
-                          else if (d === 10) { returnColor = "red"; }
-                          else{ returnColor = "black"; }
-                             return returnColor;
+                                return d.color; 
                           });
+         
+         
+    
      </script>
 </html>
