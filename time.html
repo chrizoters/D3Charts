@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!-- saved from url=(0036)http://fiddle.jshell.net/XuhVa/show/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+
+
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+
+  
+
+  
+
+  <style type="text/css">
+    
+  </style>
+
+  <title></title>
+
+  
+    
+
+
+
+
+<script type="text/javascript">//<![CDATA[
+
+
+
+ function myFunction()	{
+var dataset = [
+    {
+        "vendor-name":"HP",
+        "overall-score":45,
+		 "test-score":30
+    },
+    {
+        "vendor-name":"CQ",
+        "overall-score":86,
+		 "test-score":30
+    },
+    {
+        "vendor-name":"Tridion",
+        "overall-score":73,
+		 "test-score":30
+    },
+    {
+        "vendor-name":"Sharepoint Server",
+        "overall-score":99,
+		 "test-score":30
+    },
+    {
+        "vendor-name":"Drupal",
+        "overall-score":24,
+		 "test-score":30
+    },
+    {
+        "vendor-name":"SiteCore",
+        "overall-score":30,
+		 "test-score":30
+    },
+	 {
+        "vendor-name":"dsdsds",
+        "overall-score":89,
+		 "test-score":30
+    }
+];
+
+var width = 105
+    , height = 105
+    , innerRadius = 95;
+
+	
+	
+var drawArc = d3.svg.arc()
+    .innerRadius(innerRadius/2)
+    .outerRadius(width/2)
+    .startAngle(0);
+
+
+
+		//var p = d3.select('body').append('p');
+		//	p.html('Helo').attr('style','color:red')
+	
+//	d3.select('body').selectAll('p').data([0,1,2])
+	//  .enter().append("p")
+	//  .text(function(d){return "Iam number"+d});
+	  
+	 // d3.select(document.getElementById('Mydiv'));
+	 
+	d3.select('body').selectAll('#Mydiv')
+	  .data(dataset)
+	  .enter()
+	  .append("p")
+	  .append('g')
+	  //.text(function(d){return  d['overall-score']});
+	  .transition()
+      .duration(3000)
+        .tween("text", function(d) {
+            var i = d3.interpolate(this.textContent, d['overall-score']),
+                prec = (d + "").split("."),
+                round = (prec.length > 1) ? Math.pow(10, prec[1].length) : 1;
+
+            return function(t) {
+                this.textContent = Math.round(i(t) * round) / round;
+            };
+        });
+
+
+		
+		
+
+	var s = d3.selectAll('me')
+    .data( dataset )
+    .enter()
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height)   
+    .append('g')
+    .attr("transform", "translate(" + width/2  + "," + height/2  + ")");
+
+	
+	
+	
+//creating background circle
+s.append("circle")
+    .attr("fill", "#ffffff")
+    .attr("stroke", "#afa1a1")
+    .attr("stroke-width", 1)
+    .attr('r', width / 2);
+
+	
+//creaeting arc path
+var arc = s.append("path")
+    .attr("fill", "#21addd")
+    .attr('class', 'arc')
+    .attr('d', drawArc);
+
+
+//transition arc path from start angle to end angle
+arc.transition()
+    .duration(750)
+    .delay(300)
+  //  .ease('bounce')
+    .call(arcTween, this );
+
+//percentage value
+s.append('text')
+    .text(function(d){
+        return d['overall-score'];
+    })
+    .attr("class", "perc")
+    .attr("text-anchor", "middle")
+    .attr('font-size', '36px')                        
+    .attr("y", +10);
+	
+	
+s.append('text')
+    .text(function(d){
+        return d['test-score'];
+    })
+    .attr("class", "perc")
+    .attr("text-anchor", "middle")
+    .attr('font-size', '15px')                        
+    .attr("y", +25);
+
+
+	
+
+
+              
+function arcTween(transition, newAngle) {
+    
+    transition.attrTween("d", function(d) {
+        
+        var interpolate = d3.interpolate( 0, 360*( d['overall-score']/100) * Math.PI/180 );
+        
+        return function(t) {
+            
+            d.endAngle = interpolate(t)
+            
+            return drawArc(d);
+        };
+    });
+}
+}//]]> 
+
+</script>
+
+  
+</head>
+
+<body>
+  
+  <button onclick="myFunction()">Click me</button>
+  <div class="a" id="Mydiv"></div>
+
+<div class="a" id="Mydiv2"></div>
+
+
+
+
+</body></html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>    
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Testing Pie Chart</title>
+<!--    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.1.3"></script>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.geom.js?2.1.3"></script>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.layout.js?2.1.3"></script>-->
+
+<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.4.6"></script>
+<script src='http://mbostock.github.com/d3/d3.layout.js?2.4.6' type='text/javascript'></script>
+      
+      
+    <style type="text/css">
+        .slice text {
+            font-size: 16pt;
+            font-family: Arial;
+        }   
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+ var data = [
+    {name: "A", val: 11975},  
+    {name: "B", val: 5871}, 
+    {name: "C", val: 8916}
+];
+
+var w = 400,
+    h = 400,
+    r = Math.min(w, h) / 2,
+    labelr = r + 5, // radius for label anchor
+    color = d3.scale.category20(),
+    donut = d3.layout.pie(),
+    arc = d3.svg.arc().innerRadius(r * .6).outerRadius(r);
+
+var vis = d3.select("body")
+  .append("svg:svg")
+    .data([data])
+    .attr("width", w + 150)
+    .attr("height", h);
+
+var arcs = vis.selectAll("g.arc")
+    .data(donut.value(function(d) { return d.val }))
+  .enter().append("svg:g")
+    .attr("class", "arc")
+    .attr("transform", "translate(" + (r + 30) + "," + r + ")")
+    .on("wheel", function () {
+     // alert("wheel");
+        r++;
+});
+
+
+arcs.append("svg:path")
+    .attr("fill", function(d, i) { return color(i); })
+    .attr("d", arc);
+
+arcs.append("svg:text")
+    .attr("transform", function(d) {
+        var c = arc.centroid(d),
+            x = c[0],
+            y = c[1],
+            // pythagorean theorem for hypotenuse
+            h = Math.sqrt(x*x + y*y);
+        return "translate(" + (x/h * labelr) +  ',' +
+           (y/h * labelr) +  ")"; 
+    })
+    .attr("dy", ".35em")
+    .attr("text-anchor", function(d) {
+        // are we past the center?
+        return (d.endAngle + d.startAngle)/2 > Math.PI ?
+            "end" : "start";
+    })
+    .text(function(d, i) { return d.value.toFixed(2); });
+       
+   
+        
+        
+            d3.select("body").append("button")
+                .text("change data")
+                .on("click",function(){
+                alert("button clicked");
+                
+                    arcs.end();
+            });
+    </script>
+  </body>
+</html>

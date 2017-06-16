@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dsnap - Charts</title>
+	<style>
+	
+        .chart rect {
+  fill: black;
+ 
+}
+
+.chart2 rect {
+  fill:red;
+ 
+}
+
+.chart {
+  position: absolute;   
+}
+
+
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+	</style>
+</head>
+    <svg class="chart"></svg>
+<svg class = "chart2"></svg>
+<body>
+	<div id="wrapper">
+	</div>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script>
+       var data = [4, 8, 15, 16, 23, 42];
+
+
+var width = 420,
+    barHeight = 80;
+
+var x = d3.scale.linear()
+    .domain([0, d3.max(data)])
+    .range([0, width]);
+    
+
+var chart = d3.select(".chart")
+    .attr("width", width)
+    .attr("height", barHeight * data.length);
+    
+
+//          var widthScale = d3.scale.linear()
+//                            .domain([0,100])
+//                            .range([0,width]);
+//        
+//        
+//              
+//        var axis = d3.svg.axis()
+//                    .scale(widthScale)
+//                    .orient("left");
+//        
+//        
+//        
+//           chart.append("g")
+//            .attr("transform","translate(0,60)")
+//            .call(axis)
+           
+           
+var bar = chart.selectAll("g")
+    .data(data)
+    .enter().append("g")
+    .attr("transform", function(d, i) { return "translate(0," + i * barHeight +")"; });
+    
+bar.append("rect")
+    .attr("width", x)
+    .attr("height", 5);
+
+var data = [10, 10, 10, 10, 10, 10];
+
+
+var width = 420,
+    barHeight = 80;
+    
+var chart = d3.select(".chart2")
+    .attr("width", width)
+    .attr("height", barHeight * data.length);
+    
+
+var bar = chart.selectAll("g")
+    .data(data)
+    .enter().append("g")
+    .attr("transform", function(d, i) { return "translate(0," + (i * barHeight + barHeight - 60 )  +")"; });
+    
+bar.append("rect")
+    .attr("width", x)
+    .attr("height", 5);
+                        
+                        
+                        
+      
+	</script>
+    <div>
+            <h1> Modifier Codes 90210</h1>
+    </div>
+</body>
+</html>

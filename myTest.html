@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dsnap - Charts</title>
+	<style>
+
+
+
+
+	</style>
+</head>
+<body>
+	<div id="contentNew" style="background-color: #DDE3FF"></div>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script>
+	
+	var charData = [{ title:"a" ,value : 10},{ title:"b" ,value : 30},{ title:"c" ,value : 20},{ title:"d" ,value : 50},{ title:"f" ,value : 100}]
+
+	var svg = d3.select("#contentNew")
+				.append('svg')
+				.attr({'width':'500',height:'500'});
+	  
+	  var barChart = svg.selectAll('g').data(charData).enter()
+	  
+
+	
+	
+	    barChart.append('text')
+				.attr({
+					x : 10,
+					y:function(d,i){ return i * 25 + 10} ,
+					fill:"red"	
+				})
+		
+				.text( function(d,i) {return d.title});
+			
+		  
+
+
+	</script>
+</body>
+</html>

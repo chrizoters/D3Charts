@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+ <html>
+   <head>
+ 
+        <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.1.3"></script>
+<!--       <script type="text/javascript" src="d3.v2.min.js"></script>-->
+   </head>
+   <body>
+     <p>Hello!</p>
+  </body>
+
+     
+     <script>
+            d3.select("body").append("p");  
+/*         D3 looks at the document and selects the first descendant DOM element that contains the tag body.
+         Once an element is selected, D3.js allows you to apply operators to the element you have selected.
+         These operators can get or set things like
+         "attributes",
+         "properties", 
+         "styles", 
+         "HTML", and 
+         "text content".*/
+         
+         
+     /*
+        <svg width="50" height="50">
+           <circle cx="25" cy="25" r="25" fill="purple" />
+         </svg>
+     */
+
+         //This syntax is called chain syntax.
+         d3.select("body")
+           .append("svg")
+           .attr("width", 50)
+           .attr("height", 50)
+                .append("circle")
+                .attr("cx", 25)
+                .attr("cy", 25)
+                .attr("r", 25)
+                .style("fill", "purple");
+         
+       /*  You can see that we move from left to right. A selection is returned. An operator is applied,
+       which returns a selection. Then an operator is applied to that selection... so on and so forth.*/
+         
+         
+           d3.select("body").append("br")
+          d3.select("body").append("span").text("with variables").style("color", "red");
+          d3.select("body").append("br")
+          
+          
+         //we can assign those selections to a JavaScript Variable.
+         var bodySelection = d3.select("body");
+         
+         var svgSelection = bodySelection.append("svg")
+                             .attr("width", 50)
+                             .attr("height", 50);
+         
+         var circleSelection = svgSelection.append("circle")
+         .attr("cx", 25)
+         .attr("cy", 25)
+         .attr("r", 25)       
+         .style("fill", "purple")
+         
+       /*  Which is the same as before. How you decide to write the D3.js code is up to you. 
+           Organizing the code by variables makes it easier to read and understand what the code does.*/
+         
+         
+       /*next - Data binding*/  
+          d3.select("body").append("br")
+          d3.select("body").append("span").text("Data binding").style("color", "red");
+            d3.select("body").append("br")
+            
+         var theData = [ 1, 2, 3 ]
+         var p = d3.select("body").selectAll("div")
+          .data(theData)
+          .enter()
+          .append("span").style("background-color","orange")
+          .text("hello ").style("color","green");  // after the append operator has operated on the selection, it will return a selection of three HTML span elements.
+         
+         //use of .data(theData) and .enter( ) will allow us to bind the data to the empty selection.
+         
+         
+       /* he D3.js Data Operator returns three virtual enter selection*/
+       /*   The enter selection contains placeholders for any missing elements.
+            The update selection contains existing elements, bound to data.
+            Any remaining elements end up in the exit selection for removal.
+         */
+         
+        
+         
+           /*next - Data binding*/  
+          d3.select("body").append("br")
+          d3.select("body").append("span").text("Now actualy binding  Data ").style("color", "red");
+            d3.select("body").append("br")
+         
+         
+           var theDataA = [ 1, 2, 3 ]
+         var p = d3.select("body").selectAll("div")
+          .data(theDataA)
+          .enter()
+          .append("span").style("background-color","orange")
+         .text( function (d,i) {return "i="+i+ " d="+d +" ||";} )
+        
+         
+         /*    What is also true of the Text Operator is that if the value passed to it (the Text Operator) is a function, 
+        then the function is evaluated for each element in order. 
+        And the functions result is used to set each element's text context.
+        Which in our case means, that instead of setting "Hello" as the text value, the function goes through each element, 
+        gets the __data__ property and returns it to the Text Operator, so that it can set that result as the text content for the element.
+        */
+         
+         
+        // Anonymous functions
+      /*   If the functionName is missing, then it is called an anonymous function. 
+         Anonymous functions are used to make code more concise when declaring a function that will only be used in one place. 
+         In our case, the function is used only inside of the D3.js Text Operator:
+         */
+         
+         
+        /*Variables Available inside D3.js Operators*/
+            /*    You can see that the variable d is available for use in the anonymous function. This variable is provided to us by D3.js 
+                    and it refers to the current __data__ attribute for the specific element being processed.
+                The are two other variables provided to us by D3.js - this and i.
+                -this refers to the current DOM element being evaluated.
+               -i refers to the index of the current HTML element being evaluated in the selected elements selection. 
+                  Remember that all the data is processed at once and in sequential order. Note - i starts at 0. This means in our data set*/
+     </script>
+</html>
