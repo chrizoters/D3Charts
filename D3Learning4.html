@@ -12,35 +12,8 @@
      
      <script>
 
-         var bodySelection = d3.select("body");
- 
- var svgSelection = bodySelection.append("svg")
-                                 .attr("width", 50)
-                                 .attr("height", 50);
- 
- var circleSelection = svgSelection.append("circle")
-                                   .attr("cx", 25)
-                                   .attr("cy", 25)
-                                   .attr("r", 25)
-                                   .style("fill", "purple");
          
-/*         An SVG Circle Element is a basic SVG shape element. 
-        Basic shape elements are standard shapes which are pre-defined in SVG. 
-        Note - they can be recreated mathematically using a path (which we'll see later). For now, you will use the basic SVG shape element.*/
-         
-         
-                //         When defining the circle SVG shape, three necessary attributes are attached:
-                //
-                //cx - The x-axis coordinate of the center of the circle.
-                //cy - The y-axis coordinate of the center of the circle.
-                //r - The radius of the circle.
-         
-          d3.select("body").append("br")
-          d3.select("body").append("span").text("with variables").style("color", "red");
-          d3.select("body").append("br")
-          
-         
-          var circleRadii = [40, 20, 10];
+          var circleRadii = [60,40, 20, 10];
          
          var svgContainer = d3.select("body").append("svg")
                                     .attr("width", 200)
@@ -50,7 +23,16 @@
          var circles = svgContainer.selectAll("circle")
                            .data(circleRadii)
                            .enter()
-                           .append("circle");
+                           .append("circle") 
+                           .on("wheel", function () {
+                                alert("wheel");
+                            })
+                           .on("click", function () {
+                                alert("clik");
+                            });
+                            /*.on("mouseover", function () {
+                                alert("mouseover");
+                            });*/
                        
          var circleAttributes = circles
                        .attr("cx", 100)
@@ -62,6 +44,7 @@
                           if (d === 40) { returnColor = "green";}
                           else if (d === 20) { returnColor = "purple";} 
                           else if (d === 10) { returnColor = "red"; }
+                          else{ returnColor = "black"; }
                              return returnColor;
                           });
        /*  As you can see from the above code, we added the attributes to our circle selectio*/
