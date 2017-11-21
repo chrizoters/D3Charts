@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+ <html>
+   <head>
+ 
+        <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.1.3"></script>
+<!--       <script type="text/javascript" src="d3.v2.min.js"></script>-->
+   </head>
+   <body>
+     <p>Scale!</p>
+  </body>
+
+     
+     <script>
+         
+        /* In this section, we will cover D3.js Scales so that instead of resizing our SVG Coordinate space to our data, we can resize our data to fit into our pre-defined SVG Coordinate Space.
+        As the data attributes grow, our SVG Coordinate Space will grow as well
+        This is a problem once the SVG Viewport/Coordinate Space is bigger than the browser window.
+        
+        D3.js provides functions to perform data transformations.
+        These functions map an input domain to an output range
+        
+        
+        
+        Linear,Ordinal,Quantitative
+        */
+         
+/*         
+         Because the D3.js Scales are functions, not only can we map one input domain to an output range, 
+             the functions can convert a number in the domain to an output in the range.
+             
+             One possible reason for doing this is that we might have an SVG Viewport whose width is 100(0-100), 
+             so we need to scale our data down to fit into the window
+             
+             */
+         
+         
+         
+      /*   var initialScaleData = [0, 1000, 3000, 2000, 5000, 4000, 7000, 6000, 9000, 8000, 10000];
+      
+      To transform it to the new interval, we can manually divide each number by 100:
+      
+      var scaledByOneHundredData = [0, 10, 30, 20, 50, 40, 70, 60, 90, 80, 100];
+      It is painful to divide by 100 and then type out the new answer every time.
+      
+      
+      lots of manual work - lot of manual work right
+      ///////////////////////////
+      
+      What we would rather do is tell the computer that the initial interval (domain) is 0 to 10,000 and that the new interval (range) should be 0 to 100.
+      Then when a data point comes in, we want the computer to automatically convert it for us.
+            */
+      
+    /*  This default linear scale acts like the identity function for numbers*/
+      
+            var identityScale = d3.scale.linear();
+            
+            
+     /* We can override the default domain by specifying the domain using chained syntax.*/
+            
+            var domainOnlyScale = d3.scale.linear()
+                                    .domain([0,10000]);
+                                    
+      /*As we did not change the range, we are mapping the domain of 0 to 10000 onto 0 to 1.*/
+    
+            var linearScale = d3.scale.linear()
+                                   .domain([0,10000])
+                                    .range([0,100]);
+                             
+/////////  Bingo!   ////////   Wait     ///////////////////////                            
+  /*    What if we didn't know what the max value of our data was going to be????*/
+         
+                  
+                  var initialScaleData = [0, 1000, 3000, 2000, 5000, 4000, 7000, 6000, 9000, 8000, 10000];
+                  var newScaledData = [];
+                 var linearScale = d3.scale.linear()
+                                                .domain([0,d3.max(initialScaleData)])
+                                                .range([0,100]);
+                     
+                     for (var i = 0; i < initialScaleData.length; i++) {
+                      newScaledData[i] = linearScale(initialScaleData[i]);
+                    }
+   /////////  Bingo!   ////////   Wait     ///////////////////////            
+      
+           /*   What if we didn't know what the min value of our data was going to be?
+              we could re-write the JavaScript */
+              
+              var initialScaleData = [0, 1000, 3000, 2000, 5000, 4000, 7000, 6000, 9000, 8000, 10000];
+ 
+                var newScaledData = [];
+                var minDataPoint = d3.min(initialScaleData);
+                var maxDataPoint = d3.max(initialScaleData);
+
+                var linearScale = d3.scale.linear()
+                                .domain([minDataPoint,maxDataPoint])
+                                .range([0,100]);
+
+                for (var i = 0; i < initialScaleData.length; i++) {
+                    newScaledData[i] = linearScale(initialScaleData[i]);
+                }
+
+/*                newScaledData;
+                [0, 10, 30, 20, 50, 40, 70, 60, 90, 80, 100]*/
+
+/*Identity: a special kind of linear scale, 1:1, good for pixel values. input == output
+Linear: transforms one value in the domain interval into a value in the range interval
+Power and Logarithmic scales: sqrt, pow, log – used for exponentially increasing values
+Quantize and Quantile scales: for discrete sets of unique possible values for inputs or outputs
+Ordinal: for non quantitative scales, like names, categories, etc.*/
+         
+
+
+         
+
+     </script>
+</html>

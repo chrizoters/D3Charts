@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>D3.selectAll(...).transition() Explained</title>
+  <meta content="Explaining D3.selectAll(...).transition() behaviour" name="description">
+  </head>
+<body>
+  <link rel="stylesheet" href="d3_selectAll_transition_explained.css">
+
+  <div class='top-container'>
+     <form action="">
+      <input type="radio" name="step" onclick="_goToStage(this.value)" value=0 checked><span class="comment">start</span><br>
+      <input type="radio" name="step" onclick="_goToStage(this.value)" value=1><span class="space-2">d3.selectAll("circle")</span><br>
+      <input type="radio" name="step" onclick="_goToStage(this.value)" value=2><span class="space-4">.transition()</span><br>
+      <input type="radio" name="step" style="visibility:hidden"><span class="space-6">.attr("delay", func(d,i){return 1000*i})</span><br>
+      <input type="radio" name="step" style="visibility:hidden"><span class="space-6">.attr("duration", func(d,i){return 1000*(i+1)})</span><br>
+      <input type="radio" name="step" style="visibility:hidden"><span class="space-6">.attr("cy", func(d,i){return 30*(i+1)})</span><br>
+      <input type="radio" name="step" onclick="_goToStage(this.value)" value=3><span class="comment">end</span>
+    </form>
+    <div class="explanation-area">&nbsp;</div>
+  </div>
+  <hr/>
+
+    <style>
+    
+        .top-container {
+    position: relative;
+    width: 960px;
+    height: 160px;
+  }
+  
+  input {
+    margin-right: 10px;
+  }
+  
+  span.comment {
+    color: gray;
+  }
+  
+  span.space-2 {
+    margin-left: 10px;
+  }
+  
+  span.space-4 {
+    margin-left: 20px;
+  }
+  
+  span.space-6 {
+    margin-left: 30px;
+  }
+  
+  .explanation-area {
+    position: absolute;
+    left: 380px;
+    top: 0px;
+  }
+  
+  svg{
+    position: absolute;
+    top: 0px;
+  }
+  
+  line {
+    stroke-width: 1.5px;
+    stroke: #000;
+  }
+  
+  circle {
+    fill-opacity: .2;
+    stroke-width: 1.5px;
+    fill: #000;
+  }
+  
+  path {
+    stroke: #000;
+    stroke-width: 1.5px;
+  }
+    
+    </style>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script>
+      
+             var width = 960,
+                height = 500,
+                delay = 1000,
+                duration = 1000,
+                circleInitialPosition = 200,
+                circleCount = 15,
+                circleSpacing = width/(circleCount+1),
+                circleMovingIncrement = 30,
+                data = d3.range(circleCount),
+                explanations = _makeExplanations(),
+                explanationArea = d3.select(".explanation-area");
+
+            var svg = d3.select("body").insert("svg", ".top-container")
+              .attr("width", width)
+              .attr("height", height);
+
+            _goToStage(0);
+
+            function _playStage0() {
+              //prepare the field, add circles to svg
+              svg.selectAll("circle")
+                .data(data)
+                .enter().append("circle")
+                  .attr("transform", function(d,i) { return "translate(" + circleSpacing*(i+1) + "," + circleInitialPosition + ")" ;})
+                  .attr("r", 10)
+                  .style("stroke", '#000');
+            }
+
+            function _playStage1() {
+              //Highlight selected circles (bigger, green stroke)
+              svg.selectAll("circle")
+                .transition("playStage1")
+                  .attr('r', 15)
+                  .style('stroke', 'green')
+                  .ease('bounce')
+                  .duration(duration);
+            }
+
+            function _rewindStage1() {
+              //interrupt stage1's transitions (running and scheduled)
+              svg.selectAll('circle')
+                .transition("playStage1")
+                  .duration(0)
+
+              //rewind to stage1's initial state
+              svg.selectAll("circle")
+                .transition("rewindStage1")
+                  .attr('r', 10)
+                  .style("stroke", '#000');
+            }
+
+            function _playStage2() {
+              //Draw one scheduled transition per circle
+              //Each transitiopn as a head, a body, a tail, a start time, and an end time
+              var drawnTransitions = svg.selectAll(".drawn-transition")
+                .data(data)
+                .enter().append("g")
+                  .classed("drawn-transition", true)
+                  .attr("transform", function(d,i) { return "translate(" + circleSpacing*(i+1) + "," + circleInitialPosition + ")" ;})
+              var tails = drawnTransitions.append("path")
+                .classed("tail", true)
+                .attr("d", d3.svg.symbol().size(20))
+                .style("fill", 'grey')
+                .style("stroke", 'grey');
+              var bodies = drawnTransitions.append("line")
+                .classed("body", true)
+                .attr({x1: 0, y1: 0, x2: 0, y2: 0})
+                .attr("stroke-dasharray", "5")
+                .style("stroke", 'grey');
+              var heads = drawnTransitions.append("path")
+                .classed("head", true)
+                .attr("d", d3.svg.symbol().type("triangle-down").size(40))
+                .style("fill", 'grey')
+                .style("stroke", 'grey');
+              var starts = drawnTransitions.append("text")
+                .classed("start-time", true)
+                .attr("transform", function (d, i) { return "translate(-10, " + (circleMovingIncrement*(i+1) + 15) + ")"; })
+                .text(function(d, i) {return "start: " + i + "s"})
+                .attr("text-anchor", "end")
+                .attr("font-size", "13px")
+                .style("fill", 'grey')
+                .attr("fill-opacity", 0)
+                .style("stroke", 'green')
+                .attr("stroke-width", 2)
+                .attr("stroke-opacity", 0);
+              var ends = drawnTransitions.append("text")
+                .classed("end-time", true)
+                .attr("transform", function (d, i) { return "translate(-10, " + (circleMovingIncrement*(i+1) + 30) + ")"; })
+                .text(function(d, i) {return "end: " + (2*i+1) + "s"})
+                .attr("text-anchor", "end")
+                .attr("font-size", "13px")
+                .style("fill", 'grey')
+                .attr("fill-opacity", 0)
+                .style("stroke", 'red')
+                .attr("stroke-width", 2)
+                .attr("stroke-opacity", 0);
+
+              //Animate each transition (longer bodies, adequate position of heads, show start-times and end-times)
+              bodies.transition("playStage2")
+                .attr("y2", function(d, i) { return circleMovingIncrement*(i+1); })
+                .duration(duration);
+              heads.transition("playStage2")
+                .attr("transform", function (d, i) { return "translate(0, " + circleMovingIncrement*(i+1) + ")"; })
+                .duration(duration);
+              starts.transition("playStage2")
+                .attr("fill-opacity", 1)
+                .duration(duration);
+              ends.transition("playStage2")
+                .attr("fill-opacity", 1)
+                .duration(duration);
+
+              //Prepare animation for the next stage: add an 'executed-body' on each transition
+              var executedBodies = drawnTransitions.append("line")
+                .attr("class", "executed-body")
+                .attr({x1: 0, y1: 0, x2: 0, y2: 0})
+                .style("stroke", 'grey');
+            }
+
+            function _rewindStage2() {
+              //interrupt stage2's transitions (running and scheduled)
+              svg.selectAll('.drawn-transition')
+                .transition("playStage2")
+                  .duration(0)
+
+              //rewind to stage2's initial state
+              svg.selectAll(".drawn-transition")
+                .transition("rewindStage2")
+                  .style("fill-opacity", 0)
+                  .style("stroke-opacity", 0)
+                  .remove();
+            }
+
+            function _playStage3() {
+              //Run each transition, move circles down
+              svg.selectAll('circle')
+                .transition("playStage3")
+                  .attr('cy', function(d, i) { return circleMovingIncrement*(i+1); })
+                  .delay(function(d, i) { return delay*(i); })
+                  .duration(function(d, i) { return duration*(i+1); })
+                  .ease('linear')
+
+              //Create transitions for each drawn-transition.
+              //Graphically speaking, those transitions does nothing
+              //Those transitions allow synchronization between sub-transitions that applie on sub-elements of each drawn-transition
+              var drawnTransitionAnimations = svg.selectAll(".drawn-transition")
+                .transition("playStage3")
+                  .delay(function(d, i) { return delay*i; })
+                  .duration(function(d, i) { return duration*(i+1); })
+
+              //Run each transition, make the body of each drawn-transition 'solid' (instead of being dashed)
+              drawnTransitionAnimations.each(function (d, i) {
+                d3.select(this).select(".executed-body")
+                  .transition("playStage3")
+                    .attr("y2", circleMovingIncrement*(i+1))
+                    .ease('linear')
+              })
+              drawnTransitionAnimations.each(function (d, i) {
+                d3.select(this).select(".body")
+                  .transition("playStage3")
+                    .attr("y1", circleMovingIncrement*(i+1))
+                    .ease('linear')
+              })
+
+              //Run each transition, highlight each start-time
+              drawnTransitionAnimations.each('start', function () {
+                d3.select(this).select('.start-time')
+                  .attr("stroke-opacity", 1)
+                  .transition("playStage3")
+                    .attr("stroke-opacity", 0)
+              })
+
+              //Run each transition, highlight each end-time
+              drawnTransitionAnimations.each('end', function () {
+                d3.select(this).select('.end-time')
+                  .attr("stroke-opacity", 1)
+                  .transition("playStage3")
+                    .attr("stroke-opacity", 0)
+              })
+            }
+
+            function _rewindStage3() {
+              //interrupt stage3's transitions (running and scheduled)
+              svg.selectAll('circle')
+                .transition("playStage3")
+                  .duration(0)
+
+              svg.selectAll('.drawn-transition')
+                .transition("playStage3")
+                  .duration(0)
+
+              svg.selectAll('.executed-body')
+                .transition("playStage3")
+                  .duration(0)
+
+              svg.selectAll('.body')
+                .transition("playStage3")
+                  .duration(0)
+
+              svg.selectAll('.start-time')
+                .transition("playStage3")
+                  .duration(0)
+
+              svg.selectAll('.end-time')
+                .transition("playStage3")
+                  .duration(0)
+
+              //rewind to stage3's initial state
+              svg.selectAll('circle')
+                .transition("rewindStage3")
+                  .attr('cy', 0);
+
+              svg.selectAll(".executed-body")
+                .transition("rewindStage3")
+                  .attr('y2', 0);
+
+              svg.selectAll(".body")
+                .transition("rewindStage3")
+                  .attr('y1', 0);
+
+              svg.selectAll(".start-time")
+                .transition("rewindStage3")
+                  .attr('stroke-opacity', 0);
+
+              svg.selectAll(".end-time")
+                .transition("rewindStage3")
+                  .attr('stroke-opacity', 0);
+            }
+
+            function _goToStage(n) {
+              switch (parseInt(n)) {
+              case 0:
+                _rewindStage3();
+                _rewindStage2();
+                _rewindStage1();
+                _playStage0();
+                break;
+              case 1:
+                _rewindStage3();
+                _rewindStage2();
+                _playStage0();
+                _playStage1();
+                break;
+              case 2:
+                _rewindStage3();
+                _playStage0();
+                _playStage1();
+                _playStage2();
+                break;
+              case 3:
+                _playStage0();
+                _playStage1();
+                _playStage2();
+                _playStage3();
+                break;
+              }
+              _updateExplanations(n);
+            }
+
+            function _makeExplanations() {
+              return [
+                {
+                  stageIndex: 0,
+                  explanation: "<== Choose a line of code for more explanations."
+                },
+                {
+                  stageIndex: 1,
+                  explanation: "<em>d3.selectAll(...)</em> selects several elements. In this example, it selects the " + circleCount + " circles."
+                },
+                {
+                  stageIndex: 2,
+                  explanation: "<b>selectAll(...).transition() schedules<sup>*</sup> SEVERAL transitions</b><br> As explained in <a href='http://bost.ocks.org/mike/transition/#per-element' target='_blank'>Transitions Are per-Element and Exclusive</a>, <em>selectAll(...).transition()</em> schedules 1 transition per selected element. This example schedules " + circleCount + " transitions, one per circle. Each transition has its own <em>delay</em>, <em>duration</em>, and end value of the <em>cy</em> attribute. <em>delay</em> and <em>duration</em> allows to derive the start time and the end time of a transition.<br><br><sup>*</sup>In the D3 world, <em>scheduling</em> a transition means <em>defining</em> a transition, ie. setting its properties."
+                },
+                {
+                  stageIndex: 3,
+                  explanation: "As explained in <a href='http://bost.ocks.org/mike/transition/#life-cycle' target='_blank'>The Life of a Transition</a>, when the scheduling of transitions is complete, each transition waits until it can start, then runs, and then stops.<br><br><b>Each transition runs independantly</b><br>When a transition stops or is interupted, this has no side-effect on other transitions, even on sibling transitions (ie. defined by the same JavaScript lines of code). As a proof, note that when one of the transitions of this example stops, others transitions to the right still continue to run!<br> Synchronization between transitions comes with identical delays and/or durations."
+                }
+              ]
+            }
+
+            function _updateExplanations (index) {
+              var explanation = explanations[index].explanation;
+              //update explanations
+
+              explanationArea.transition()
+                .style("opacity", 0)
+                .each('end', function() {
+                  explanationArea.html(explanation);
+                })
+              .transition()
+                  .style("opacity", 1);
+            }
+
+    </script>
+</body>
